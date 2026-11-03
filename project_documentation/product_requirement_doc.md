@@ -8,7 +8,7 @@ Version 1.0 · MVP · October 2026
 
 Spascle is an AI-powered online learning platform that helps beginners learn programming through practical, field-specific scientific applications.
 
-Rather than teaching programming in isolation, Spasscle connects programming concepts to problems learners recognize from their scientific disciplines.
+Rather than teaching programming in isolation, Spascle connects programming concepts to problems learners recognize from their scientific disciplines.
 
 The initial focus is computational materials science, with plans to expand into other scientific fields over time.
 
@@ -268,7 +268,7 @@ The product should be developed and validated incrementally.
 
 ## 7. Assumptions and product decisions
 
-- Prosca will initially be a self-paced learning platform for individual learners.
+- Spascle will initially be a self-paced learning platform for individual learners.
 - The initial launch will focus on computational materials science rather than trying to serve every scientific field.
 - Python is the first course language; Bash follows within the MVP release cycle.
 - NumPy, Matplotlib and other selected packages will be available as part of the supported Python learning environment.
@@ -277,4 +277,4 @@ The product should be developed and validated incrementally.
 - The initial user base and traffic are expected to be modest, so features and operating costs should remain proportionate.
 - Expansion into other fields and advanced learning features will be guided by evidence from the pilot.
 
-Product direction: Prosca should first prove that beginners can learn Python, apply it to computational materials science and complete meaningful exercises and labs in a reliable browser-based environment. Broader scientific coverage and more advanced AI features come after that core experience works well.
+Product direction: Spascle should first prove that beginners can learn Python, apply it to computational materials science and complete meaningful exercises and labs in a reliable browser-based environment. Broader scientific coverage and more advanced AI features come after that core experience works well.
