@@ -1,0 +1,92 @@
+SPASCLE FRONTEND - EXTERNAL TOOLS AND SERVICES
+==============================================
+Last updated: 3 November 2026
+
+Everything the frontend depends on that was not written for this project.
+Update this file whenever a package, CDN or external service is added or removed.
+
+
+1. SERVICES LOADED FROM THE INTERNET AT RUNTIME
+-----------------------------------------------
+These are fetched by the learner's browser, not bundled with the app.
+If a CDN is unreachable, the related feature degrades (see "If unavailable").
+
+Pyodide (Python runtime compiled to WebAssembly)
+  Version:        314.0.7  (set in lib/python-runner.ts -> PYODIDE_VERSION)
+  Loaded from:    https://cdn.jsdelivr.net/pyodide/v314.0.7/full/
+  Used for:       Running learners' Python code in the browser ("Try it hands-on").
+                  Runs inside a module Web Worker: public/workers/python-worker.js
+  Download size:  About 10 MB on the first run, then cached by the browser.
+  License:        MPL-2.0
+  Website:        https://pyodide.org
+  If unavailable: The editor shows "Python is unavailable" with a Try again button.
+                  Lessons stay readable.
+  Note:           Pyodide 314+ only works in module workers
+                  (new Worker(url, { type: "module" })).
+
+Monaco Editor (the code editor used in VS Code)
+  Version:        0.55.1  (default of @monaco-editor/loader 1.7.0)
+  Loaded from:    https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs
+  Used for:       The editable code area in "Try it hands-on".
+  License:        MIT
+  Website:        https://microsoft.github.io/monaco-editor/
+  If unavailable: The editor area stays on "Loading editor...".
+
+jsDelivr (CDN hosting Pyodide and Monaco)
+  Website:        https://www.jsdelivr.com
+  Note:           Both runtime downloads above come from this CDN. To remove the
+                  dependency later, self-host the files and change the URLs.
+
+Google Fonts via next/font (Inter, JetBrains Mono)
+  Used for:       Interface font (Inter) and code font (JetBrains Mono).
+  Configured in:  app/layout.tsx
+  License:        SIL Open Font License 1.1 (both fonts)
+  Note:           next/font downloads the fonts at BUILD time and serves them
+                  from the app, so browsers do not contact Google at runtime.
+
+
+2. NPM PACKAGES - RUNTIME (shipped to the browser / used by the app)
+--------------------------------------------------------------------
+Package                    Version   License      Purpose
+next                       16.4.5    MIT          React framework (App Router, Cache Components)
+react                      19.3.0    MIT          UI library
+react-dom                  19.3.0    MIT          React renderer for the browser
+@monaco-editor/react       4.7.0     MIT          React wrapper that loads Monaco from the CDN
+radix-ui                   1.8.1     MIT          Accessible primitives behind the shadcn/ui
+                                                  components: Select, Dialog (Sheet), Tabs, Slot
+class-variance-authority   0.7.1     Apache-2.0   Component variants (Button, Badge, Alert)
+clsx                       2.1.1     MIT          Conditional class names (inside cn())
+tailwind-merge             3.7.0     MIT          Resolves conflicting Tailwind classes (inside cn())
+lucide-react               1.67.0    ISC          Icon set used across the whole UI
+
+
+3. NPM PACKAGES - DEVELOPMENT ONLY (build, lint, types)
+-------------------------------------------------------
+Package                    Version   License      Purpose
+tailwindcss                4.3.4     MIT          Utility CSS framework
+@tailwindcss/turbopack     4.3.4     MIT          Tailwind loader for the Turbopack bundler
+typescript                 5.9.3     Apache-2.0   Type checking
+eslint                     9.39.5    MIT          Linting
+eslint-config-next         16.4.5    MIT          Next.js lint rules
+@types/node                20.19.43  MIT          Node.js type definitions
+@types/react               19.3.0    MIT          React type definitions
+@types/react-dom           19.3.0    MIT          React DOM type definitions
+
+
+4. DESIGN AND COMPONENT CONVENTIONS (not installed packages)
+------------------------------------------------------------
+shadcn/ui
+  Website:        https://ui.shadcn.com
+  How it's used:  Not a dependency. Its component patterns were copied into
+                  components/ui/ (Button, Badge, Card, Tabs, Select, Sheet, Alert)
+                  and restyled with SPASCLE design tokens. components.json lets
+                  `npx shadcn add <component>` add more later.
+  License:        MIT
+
+
+5. TOOLS USED DURING DEVELOPMENT (not part of the app)
+------------------------------------------------------
+Python 3 (local)      Used to check that every lesson example prints exactly the
+                      output shown in the lesson.
+Google Chrome         Used headless to screenshot pages and to test the code
+(headless)            editor end to end (run, errors, timeout, program input).
