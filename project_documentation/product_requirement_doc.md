@@ -456,5 +456,4 @@ The product should be developed and validated incrementally.
 - The initial user base and traffic are expected to be modest, so features and operating costs should remain proportionate.
 - Expansion into other fields and advanced learning features will be guided by evidence from the pilot.
 
-**Product direction:** Spascle should first prove that beginners can learn Python, apply it to computational materials science and complete meaningful exercises and labs in a reliable browser-based environment. The public learning content should be accessible without an account. Authentication, personalized progress, administrator and reviewer capabilities will follow in Release 2, while Bash and broader learning pathways will be introduced later.
-
+Product direction: Spascle should first prove that beginners can learn Python, apply it to computational materials science and complete meaningful exercises and labs in a reliable browser-based environment. Broader scientific coverage and more advanced AI features come after that core experience works well.
