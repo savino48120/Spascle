@@ -163,14 +163,14 @@ The primary and secondary colours are:
 
 | Colour | Hex code | Intended use |
 |---|---|---|
-| Primary | `#246AF6` | Primary buttons, links, active navigation, focus highlights, and important interactive elements |
+| Primary | `#580A50` | Primary buttons, links, active navigation, focus highlights, and important interactive elements |
 | Secondary | `#DB9000` | Supporting accents, selected highlights, secondary actions, and emphasis |
 
 The primary colour should establish the platform's visual identity. The secondary colour should complement it rather than compete with it.
 
 ### 6.2 Colour Usage Guidelines
 
-**Primary colour — `#246AF6`**
+**Primary colour — `#580A50`**
 
 Use for:
 
@@ -225,7 +225,7 @@ Suggested visual direction:
 - Dark primary text.
 - Muted secondary text.
 - Subtle borders and dividers.
-- Primary blue for interactive elements.
+- Primary plum for interactive elements.
 - Secondary gold for supporting highlights.
 
 ### 7.2 Dark Mode
@@ -239,7 +239,7 @@ Suggested visual direction:
 - Light primary text.
 - Muted light secondary text.
 - Subtle borders and dividers.
-- Accessible blue and gold accents.
+- Accessible plum and gold accents.
 - Carefully selected semantic colours.
 
 Avoid using pure black as the background for every component. A layered dark-neutral palette should help distinguish the page, content surfaces, and interactive panels.
@@ -268,7 +268,7 @@ The following tokens provide a starting point for the visual design system. Exac
 
 | Token | Light mode | Dark mode |
 |---|---|---|
-| Primary | `#246AF6` | `#246AF6` or an accessible adjusted shade |
+| Primary | `#580A50` | `#A3399A` (accessible adjusted shade; `#580A50` is too dark on dark surfaces) |
 | Secondary | `#DB9000` | `#DB9000` or an accessible adjusted shade |
 | Page background | Light neutral | Dark neutral |
 | Primary surface | White | Dark surface |
@@ -284,7 +284,7 @@ All colour combinations must be checked for sufficient contrast. In particular:
 
 - Use dark text on the gold secondary colour when needed.
 - Do not assume white text is readable on every gold background.
-- Check blue text and button combinations against their backgrounds.
+- Check plum text and button combinations against their backgrounds.
 - Ensure code syntax highlighting remains readable in both themes.
 
 ## 8. Typography and Content Presentation

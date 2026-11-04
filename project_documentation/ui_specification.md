@@ -80,16 +80,16 @@ SPASCLE's primary and secondary brand colours are:
 
 | Colour | Hex code | Role |
 |---|---|---|
-| Primary blue | `#246AF6` | Main brand colour and primary interactive elements |
+| Primary plum | `#580A50` | Main brand colour and primary interactive elements |
 | Secondary gold | `#DB9000` | Supporting brand colour and visual accents |
 
-The primary blue should be the dominant interactive brand colour.
+The primary plum should be the dominant interactive brand colour.
 
-The secondary gold should complement the blue and provide contrast in selected interface elements.
+The secondary gold should complement the plum and provide contrast in selected interface elements.
 
 ### 4.2 Primary Colour Usage
 
-**Primary: `#246AF6`**
+**Primary: `#580A50`**
 
 Use for:
 
@@ -161,7 +161,7 @@ Important considerations:
 
 - White text should not automatically be used on the secondary gold colour.
 - Use dark text on gold backgrounds where necessary.
-- Check primary blue against white and dark backgrounds.
+- Check primary plum against white and dark backgrounds. `#580A50` is too dark for dark-mode surfaces (1.33:1 on `#111827`), so dark mode uses the adjusted shade `#A3399A` for fills and `#E8A6DF` for text.
 - Provide accessible adjusted shades when the original brand colour does not meet the required contrast.
 - Use colour alongside text, icons, or other indicators to communicate status.
 - Validate all text and component combinations against WCAG 2.2 AA contrast requirements.
@@ -186,7 +186,7 @@ Light mode should provide a bright, clean, and comfortable learning environment.
 - Muted grey supporting text.
 - Subtle borders.
 - Minimal shadows.
-- Blue interactive elements.
+- Plum interactive elements.
 - Gold supporting accents.
 
 The learning content should remain the primary visual focus.
@@ -203,7 +203,7 @@ Dark mode should provide a comfortable experience in low-light environments.
 - Muted secondary text.
 - Subtle borders.
 - Carefully adjusted shadows and elevation.
-- Accessible blue and gold accents.
+- Accessible plum and gold accents.
 - Readable syntax highlighting in code editors.
 - Minimalistic design
 
@@ -388,7 +388,7 @@ The course sidebar should appear on the left side of the learning environment on
 - Consistent spacing between modules and lessons.
 - Scrollable content when the course hierarchy exceeds the available height.
 
-The active lesson should use a visible highlight, such as a subtle blue background and a primary-colour indicator.
+The active lesson should use a visible highlight, such as a subtle plum background and a primary-colour indicator.
 
 In the MVP, the sidebar should not display persistent completion indicators.
 

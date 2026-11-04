@@ -289,6 +289,7 @@ Initial contexts:
 - Chemistry
 - Physics
 - Biology
+- Biochemistry
 - General Programming
 
 The database should allow additional contexts to be added without altering the course or lesson schema.

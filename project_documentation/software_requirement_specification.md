@@ -222,6 +222,7 @@ Potential contexts include:
 - Chemistry.
 - Physics.
 - Biology.
+- Biochemistry.
 - General programming.
 
 The availability of a context shall depend on the actual content prepared for the relevant lesson.

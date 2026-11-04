@@ -120,7 +120,7 @@ The MVP will use the MoSCoW prioritization method: Must have, Should have, Could
 - Materials science as the default scientific context for examples and exercises.
 - The ability to switch the scientific context within an individual lesson, where suitable content is available.
 - A general scientific-context selector that applies the selected context across the learning pages by default.
-- Support for scientific contexts such as materials science, chemistry, physics, biology and general programming, as relevant content becomes available.
+- Support for scientific contexts such as materials science, chemistry, physics, biology, biochemistry and general programming, as relevant content becomes available.
 - Lesson-level context selection takes precedence over the general context selection for that lesson.
 - Clear communication when a suitable example or exercise is unavailable in the selected context, with an appropriate alternative where possible.
 
@@ -311,6 +311,7 @@ Supported contexts may include:
 - Chemistry
 - Physics
 - Biology
+- Biochemistry
 - General programming
 
 The availability of a context may vary by lesson. Spascle should not present an unrelated example as though it were specific to the selected discipline.

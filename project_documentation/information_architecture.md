@@ -227,16 +227,16 @@ Python for Scientific Computing
 │   ├── Lesson 3: Strings
 │   └── Lesson 4: Input and Output
 │
-├── Module 3: Control Flow
-│   ├── Lesson 1: Conditional Statements
-│   ├── Lesson 2: For Loops
-│   └── Lesson 3: While Loops
-│
-├── Module 4: Data Structures
+├── Module 3: Data Structures
 │   ├── Lesson 1: Lists
 │   ├── Lesson 2: Tuples
 │   ├── Lesson 3: Dictionaries
 │   └── Lesson 4: Sets
+│
+├── Module 4: Control Flow
+│   ├── Lesson 1: Conditional Statements
+│   ├── Lesson 2: For Loops
+│   └── Lesson 3: While Loops
 │
 ├── Module 5: Functions
 │   ├── Lesson 1: Introduction to Functions
@@ -353,6 +353,7 @@ Potential context options include:
 - Chemistry.
 - Physics.
 - Biology.
+- Biochemistry.
 - General programming.
 
 Only contexts with suitable prepared content should be presented as available choices for a particular lesson or activity.
@@ -694,7 +695,8 @@ flowchart TD
     SC --> SC2["Chemistry"]
     SC --> SC3["Physics"]
     SC --> SC4["Biology"]
-    SC --> SC5["General Programming"]
+    SC --> SC5["Biochemistry"]
+    SC --> SC6["General Programming"]
 ```
 
 ## 10.2 Content organization rules

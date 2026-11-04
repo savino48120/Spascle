@@ -1,0 +1,193 @@
+/*
+ * SPASCLE design tokens (raw values).
+ *
+ * Source: project_documentation/ui_specification.md (§4 colour, §6 type,
+ * §7 spacing/radius, §19 tokens).
+ *
+ * These are plain CSS custom properties that change per theme. They are
+ * mapped to Tailwind utilities in app/globals.css (`@theme inline`), so
+ * components should use the utilities (`bg-surface`, `text-foreground-muted`,
+ * `text-primary-emphasis`, ...) rather than referencing these directly.
+ *
+ * Theme selection: <html data-theme="light|dark">, set before first paint by
+ * the inline script in components/theme/theme-script.tsx.
+ *
+ * Contrast notes (WCAG 2.2 AA, 4.5:1 for normal text):
+ *   - #580A50 + white text ............ 13.34 OK for primary buttons
+ *   - #580A50 as text on #F8FAFC ...... 12.75 OK (primary-emphasis = primary)
+ *   - #580A50 on dark bg #111827 ...... 1.33  fails -> dark theme uses #A3399A
+ *   - #DB9000 + white text ............ 2.62  fails -> gold uses dark text
+ *   - #16A34A / #0284C7 / #D97706 fail as text on white -> *-emphasis shades
+ *   - #64748B on #F1F5F9 .............. 4.34  fails -> muted text darkened
+ *   - dark: muted #94A3B8 on elevated #334155 is 4.04 -> on elevated
+ *     surfaces (menus, popovers) use foreground-secondary for text.
+ * Brand identity colours stay as-is for fills; adjusted shades are only
+ * used where text legibility requires it (spec §4.6).
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ---- Neutrals ---------------------------------------------------- */
+  --tk-background: #f8fafc;
+  --tk-surface: #ffffff;
+  --tk-surface-secondary: #f1f5f9;
+  --tk-surface-elevated: #ffffff;
+  --tk-foreground: #172033;
+  --tk-foreground-secondary: #475569;
+  --tk-foreground-muted: #5b6b80; /* spec #64748B, darkened for AA */
+  --tk-border: #e2e8f0;
+  --tk-border-strong: #cbd5e1;
+  --tk-divider: #e5e7eb;
+  --tk-disabled: #f1f5f9;
+  --tk-disabled-foreground: #94a3b8;
+
+  /* ---- Brand: primary plum ---------------------------------------- */
+  --tk-primary: #580a50;
+  --tk-primary-hover: #470840;
+  --tk-primary-active: #3a0634;
+  --tk-on-primary: #ffffff;
+  --tk-primary-emphasis: #580a50; /* links / plum text */
+  --tk-primary-subtle: #f7eaf5; /* active nav, tinted panels */
+  --tk-primary-subtle-border: #e8c6e3;
+
+  /* ---- Brand: secondary gold -------------------------------------- */
+  --tk-secondary: #db9000;
+  --tk-secondary-hover: #c28000;
+  --tk-on-secondary: #172033; /* never white on gold */
+  --tk-secondary-emphasis: #8a5a00; /* gold-toned text */
+  --tk-secondary-subtle: #fdf4e3;
+  --tk-secondary-subtle-border: #f3d9a4;
+
+  /* ---- Semantic ---------------------------------------------------- */
+  --tk-success: #16a34a;
+  --tk-success-emphasis: #15803d;
+  --tk-success-subtle: #f0fdf4;
+  --tk-success-border: #bbf7d0;
+
+  --tk-error: #dc2626;
+  --tk-error-emphasis: #b91c1c;
+  --tk-error-subtle: #fef2f2;
+  --tk-error-border: #fecaca;
+
+  --tk-warning: #d97706;
+  --tk-warning-emphasis: #b45309;
+  --tk-warning-subtle: #fffbeb;
+  --tk-warning-border: #fde68a;
+
+  --tk-info: #0284c7;
+  --tk-info-emphasis: #0369a1;
+  --tk-info-subtle: #f0f9ff;
+  --tk-info-border: #bae6fd;
+
+  /* ---- Interaction ------------------------------------------------- */
+  --tk-ring: #580a50;
+  --tk-ring-offset: #ffffff;
+  --tk-overlay: rgb(15 23 42 / 0.5);
+  --tk-selection: #e8c6e3;
+
+  /* ---- Elevation --------------------------------------------------- */
+  --tk-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.05);
+  --tk-shadow-sm: 0 1px 3px rgb(15 23 42 / 0.08), 0 1px 2px rgb(15 23 42 / 0.04);
+  --tk-shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+  --tk-shadow-lg: 0 12px 32px -8px rgb(15 23 42 / 0.14), 0 4px 8px -4px rgb(15 23 42 / 0.06);
+
+  /* ---- Code (editor defaults to dark in both themes, spec §12.2) --- */
+  --tk-code-background: #0f172a;
+  --tk-code-foreground: #e2e8f0;
+  --tk-code-border: #1e293b;
+  --tk-code-inline-background: #f1f5f9;
+  --tk-code-inline-foreground: #172033;
+  --tk-code-comment: #8b9bb4;
+  --tk-code-string: #86efac;
+  --tk-code-number: #f0b43c;
+  --tk-code-function: #8ab0fb;
+
+  /* ---- Brand gradient (hero/CTA). Text on it stays ≥ AA ----------- */
+  --tk-gradient-strong: #e3bedd;
+  --tk-gradient-soft: #f2dfef;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ---- Neutrals ---------------------------------------------------- */
+  --tk-background: #111827;
+  --tk-surface: #1f2937;
+  --tk-surface-secondary: #273449;
+  --tk-surface-elevated: #334155;
+  --tk-foreground: #f8fafc;
+  --tk-foreground-secondary: #cbd5e1;
+  --tk-foreground-muted: #94a3b8;
+  --tk-border: #374151;
+  --tk-border-strong: #4b5563;
+  --tk-divider: #374151;
+  --tk-disabled: #273449;
+  --tk-disabled-foreground: #64748b;
+
+  /* ---- Brand: primary plum ---------------------------------------- */
+  --tk-primary: #a3399a; /* #580A50 is 1.33:1 on the dark bg; white text 5.82:1 */
+  --tk-primary-hover: #b347a9;
+  --tk-primary-active: #8e2a82;
+  --tk-on-primary: #ffffff;
+  --tk-primary-emphasis: #e8a6df; /* links on dark surfaces */
+  --tk-primary-subtle: #3a1636;
+  --tk-primary-subtle-border: #5c2554;
+
+  /* ---- Brand: secondary gold -------------------------------------- */
+  --tk-secondary: #db9000;
+  --tk-secondary-hover: #f0a21a;
+  --tk-on-secondary: #172033;
+  --tk-secondary-emphasis: #f0b43c;
+  --tk-secondary-subtle: #3a2d12;
+  --tk-secondary-subtle-border: #5c4614;
+
+  /* ---- Semantic ---------------------------------------------------- */
+  --tk-success: #22c55e;
+  --tk-success-emphasis: #4ade80;
+  --tk-success-subtle: #12291d;
+  --tk-success-border: #1f5134;
+
+  --tk-error: #ef4444;
+  --tk-error-emphasis: #f87171;
+  --tk-error-subtle: #2f1517;
+  --tk-error-border: #6b2427;
+
+  --tk-warning: #f59e0b;
+  --tk-warning-emphasis: #fbbf24;
+  --tk-warning-subtle: #2f2410;
+  --tk-warning-border: #6b4f12;
+
+  --tk-info: #0ea5e9;
+  --tk-info-emphasis: #38bdf8;
+  --tk-info-subtle: #0f2533;
+  --tk-info-border: #164e6b;
+
+  /* ---- Interaction ------------------------------------------------- */
+  --tk-ring: #d77fcb;
+  --tk-ring-offset: #111827;
+  --tk-overlay: rgb(2 6 23 / 0.7);
+  --tk-selection: #5c2554;
+
+  /* ---- Elevation (darker, tighter shadows; surfaces carry depth) -- */
+  --tk-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
+  --tk-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.25);
+  --tk-shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --tk-shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.5), 0 4px 8px -4px rgb(0 0 0 / 0.35);
+
+  /* ---- Code -------------------------------------------------------- */
+  --tk-code-background: #0b1220;
+  --tk-code-foreground: #e2e8f0;
+  --tk-code-border: #273449;
+  --tk-code-inline-background: #273449;
+  --tk-code-inline-foreground: #f8fafc;
+  --tk-code-comment: #8b9bb4;
+  --tk-code-string: #86efac;
+  --tk-code-number: #f0b43c;
+  --tk-code-function: #8ab0fb;
+
+  /* ---- Brand gradient --------------------------------------------- */
+  --tk-gradient-strong: #4a1544;
+  --tk-gradient-soft: #2e1530;
+}
