@@ -9,6 +9,8 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   /** Static so pages stay prerenderable under Cache Components. */
   copyrightYear: 2026,
+  /** Google Analytics 4 measurement ID. Public by design: it appears in every page's HTML. */
+  googleAnalyticsId: "G-WMJM731KTM",
 } as const;
 
 export interface NavLink {
