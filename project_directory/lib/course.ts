@@ -20,6 +20,12 @@ export interface LessonLocation {
   nextLesson: LessonLink | null;
 }
 
+export interface LabLocation {
+  courseModule: Module;
+  previousLesson: LessonLink | null;
+  nextLesson: LessonLink | null;
+}
+
 export interface ExerciseLocation extends LessonLocation {
   codingExercise: CodingExercise;
   /** The lesson this exercise practises. */
@@ -34,16 +40,23 @@ function toLessonLink({ courseModule, lesson }: (typeof ORDERED_LESSONS)[number]
   return { title: lesson.title, href: ROUTES.lesson(courseModule.slug, lesson.slug), moduleTitle: courseModule.title };
 }
 
-/** Every page in reading order: each lesson, followed by its hands-on exercise when one exists. */
-const LEARNING_SEQUENCE: LessonLink[] = ORDERED_LESSONS.flatMap((orderedLesson) => {
-  const lessonLink = toLessonLink(orderedLesson);
-  const { courseModule, lesson } = orderedLesson;
-  if (!getCodingExercise(courseModule.slug, lesson.slug)) return [lessonLink];
-  return [
-    lessonLink,
-    { title: `Exercise: ${lesson.title}`, href: ROUTES.exercise(courseModule.slug, lesson.slug), moduleTitle: courseModule.title },
-  ];
-});
+/**
+ * Every page in reading order: each lesson followed by its hands-on exercise
+ * (when one exists), and a guided lab at the end of each module that has one.
+ */
+const LEARNING_SEQUENCE: LessonLink[] = PYTHON_COURSE.modules.flatMap((courseModule) => [
+  ...courseModule.lessons.flatMap((lesson) => {
+    const lessonLink = toLessonLink({ courseModule, lesson });
+    if (!getCodingExercise(courseModule.slug, lesson.slug)) return [lessonLink];
+    return [
+      lessonLink,
+      { title: `Exercise: ${lesson.title}`, href: ROUTES.exercise(courseModule.slug, lesson.slug), moduleTitle: courseModule.title },
+    ];
+  }),
+  ...(courseModule.hasLab
+    ? [{ title: `Lab: ${courseModule.title}`, href: ROUTES.lab(courseModule.slug), moduleTitle: courseModule.title }]
+    : []),
+]);
 
 function findNeighbouringPages(href: string) {
   const pageIndex = LEARNING_SEQUENCE.findIndex((learningPage) => learningPage.href === href);
@@ -86,6 +99,22 @@ export function findExerciseLocation(moduleSlug: string, lessonSlug: string): Ex
     codingExercise,
     lessonHref: ROUTES.lesson(moduleSlug, lessonSlug),
   };
+}
+
+/**
+ * Finds a module's guided lab with the pages either side of it.
+ *
+ * @returns The lab's location, or `null` when the module is unknown or has no lab.
+ */
+export function findLabLocation(moduleSlug: string): LabLocation | null {
+  const courseModule = PYTHON_COURSE.modules.find((candidateModule) => candidateModule.slug === moduleSlug);
+  if (!courseModule?.hasLab) return null;
+  return { courseModule, ...findNeighbouringPages(ROUTES.lab(moduleSlug)) };
+}
+
+/** `"module/lesson"` keys for lessons that have a hands-on exercise. Serializable for the client sidebar. */
+export function getExerciseLessonKeys(): string[] {
+  return getAllExerciseParams().map(({ moduleSlug, lessonSlug }) => `${moduleSlug}/${lessonSlug}`);
 }
 
 /** Every lesson that has a hands-on exercise, for the exercise page's `generateStaticParams`. */

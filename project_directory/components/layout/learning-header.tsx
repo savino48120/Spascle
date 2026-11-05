@@ -10,11 +10,17 @@ import { SiteLogo } from "./site-logo";
  * Compact learning-area header (ui_specification §8.3): brand, current course,
  * global scientific-context selector and theme switcher.
  */
-export function LearningHeader({ publishedLessonKeys }: { publishedLessonKeys: string[] }) {
+export function LearningHeader({
+  publishedLessonKeys,
+  exerciseLessonKeys,
+}: {
+  publishedLessonKeys: string[];
+  exerciseLessonKeys: string[];
+}) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface">
       <div className="flex h-header items-center gap-2 px-4 sm:gap-4 lg:px-6">
-        <MobileCourseNav publishedLessonKeys={publishedLessonKeys} />
+        <MobileCourseNav publishedLessonKeys={publishedLessonKeys} exerciseLessonKeys={exerciseLessonKeys} />
         <SiteLogo className="shrink-0" />
         <span aria-hidden className="hidden h-6 w-px bg-divider md:block" />
         <Link

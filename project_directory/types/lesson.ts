@@ -16,7 +16,26 @@ export interface CodeSample {
   stdin?: string;
   /** Show the "Try it hands-on" editor for this sample. Defaults to true. */
   isTryable?: boolean;
+  /** Pre-rendered plot for Matplotlib examples, stored under /public. */
+  outputImage?: LessonImage;
 }
+
+export interface LessonImage {
+  src: string;
+  /** Describes what the plot shows, for screen readers. */
+  alt: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * One version of a piece of content per scientific context. Materials science
+ * is the default context and must always be present; the others are optional
+ * and fall back to it when missing.
+ */
+export type ContextVariants<Variant> = { "materials-science": Variant } & Partial<
+  Record<Exclude<ScientificContextSlug, "materials-science">, Variant>
+>;
 
 export interface ContextExampleVariant extends CodeSample {
   intro: string;
@@ -27,6 +46,8 @@ export type CalloutTone = "info" | "tip" | "warning";
 
 export type LessonBlock =
   | { type: "heading"; text: string }
+  | { type: "subheading"; text: string }
+  | { type: "table"; caption?: string; columns: string[]; rows: string[][] }
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[]; isOrdered?: boolean }
   | ({ type: "code"; title?: string } & CodeSample)
@@ -35,10 +56,7 @@ export type LessonBlock =
   | {
       type: "contextExample";
       title: string;
-      /** Materials science is the default context and must always be present. */
-      variants: { "materials-science": ContextExampleVariant } & Partial<
-        Record<Exclude<ScientificContextSlug, "materials-science">, ContextExampleVariant>
-      >;
+      variants: ContextVariants<ContextExampleVariant>;
     };
 
 export interface MultipleChoiceOption {
@@ -68,13 +86,20 @@ export interface LessonContent {
 }
 
 /**
- * Hands-on coding exercise shown on its own page after a lesson. The learner
- * writes a program; "Check my answer" compares what it prints with
- * `expectedOutput`.
+ * Hands-on coding exercise shown on its own page after a lesson, with one
+ * version per scientific context (see `CodingExerciseVariant`).
  */
 export interface CodingExercise {
   moduleSlug: string;
   lessonSlug: string;
+  variants: ContextVariants<CodingExerciseVariant>;
+}
+
+/**
+ * One scientific context's version of a coding exercise. The learner writes a
+ * program; each run is checked by comparing what it prints with `expectedOutput`.
+ */
+export interface CodingExerciseVariant {
   title: string;
   /** Problem statement, one paragraph per entry. Supports inline formatting. */
   problem: string[];

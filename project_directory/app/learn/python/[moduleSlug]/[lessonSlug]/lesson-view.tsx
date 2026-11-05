@@ -8,18 +8,31 @@ import { LessonBlocks } from "@/components/learning/lesson/lesson-blocks";
 import { LessonHeader } from "@/components/learning/lesson/lesson-header";
 import { LessonNavigation } from "@/components/learning/lesson/lesson-navigation";
 import { EmptyState } from "@/components/shared/empty-state";
+import { UnderConstructionNotice } from "@/components/shared/under-construction-notice";
 import { Button } from "@/components/ui/button";
 import { getLessonContent } from "@/data/lessons";
-import { ROUTES } from "@/lib/constants/routes";
-import { findLessonLocation } from "@/lib/course";
+import { PYTHON_COURSE } from "@/data/python-course";
+import { LAB_SLUG, ROUTES } from "@/lib/constants/routes";
+import { findLabLocation, findLessonLocation } from "@/lib/course";
 import { getLessonContexts } from "@/lib/lesson-content";
+import { LabView } from "./lab-view";
 
 /**
  * Reads the URL params (inside the page's Suspense boundary), rejects slugs
- * that aren't in the course outline, then renders the cached lesson.
+ * that aren't in the course outline, then renders the cached lesson or lab.
+ * A module without a lab shows the under-construction notice rather than a 404.
  */
 export async function LessonFromParams({ params }: Pick<PageProps<"/learn/python/[moduleSlug]/[lessonSlug]">, "params">) {
   const { moduleSlug, lessonSlug } = await params;
+
+  if (lessonSlug === LAB_SLUG) {
+    if (findLabLocation(moduleSlug)) return <LabView moduleSlug={moduleSlug} />;
+    if (PYTHON_COURSE.modules.some((courseModule) => courseModule.slug === moduleSlug)) {
+      return <UnderConstructionNotice headingLevel={1} />;
+    }
+    notFound();
+  }
+
   if (!findLessonLocation(moduleSlug, lessonSlug)) notFound();
   return <LessonView moduleSlug={moduleSlug} lessonSlug={lessonSlug} />;
 }
@@ -75,7 +88,7 @@ async function LessonView({ moduleSlug, lessonSlug }: { moduleSlug: string; less
           <EmptyState
             Icon={PenLine}
             title="This lesson is being written"
-            description="Its explanations, examples and exercises are still going through review. Modules 1 to 4 are available now."
+            description="Its explanations, examples and exercises are still going through review. Carry on with the other lessons in the meantime."
             actions={
               <Button asChild variant="secondary">
                 <Link href={ROUTES.python}>

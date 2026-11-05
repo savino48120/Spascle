@@ -41,6 +41,8 @@ export interface Module {
   description?: string;
   displayOrder: number;
   lessons: LessonSummary[];
+  /** Whether a guided lab follows the module's lessons. */
+  hasLab: boolean;
 }
 
 export interface LessonSummary {

@@ -12,6 +12,8 @@ export const PYODIDE_VERSION = "314.0.7";
 const PYODIDE_INDEX_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`;
 const WORKER_URL = "/workers/python-worker.js";
 export const RUN_TIMEOUT_MS = 10_000;
+/** Downloading NumPy/Matplotlib on first use can take a while on slow connections. */
+export const PACKAGE_LOAD_TIMEOUT_MS = 120_000;
 
 export type RunOutcome =
   | { status: "success"; isTruncated: boolean }
@@ -25,14 +27,24 @@ export interface RunRequest {
   stdin?: string;
   onStdout: (text: string) => void;
   onStderr: (text: string) => void;
-  /** Called with "loading" while Pyodide downloads, then "running". */
-  onPhaseChange?: (phase: "loading" | "running") => void;
+  /** Called with a PNG data URL for each Matplotlib figure the program draws. */
+  onFigure?: (dataUrl: string) => void;
+  /**
+   * Called with "loading" while Pyodide downloads, "loading-packages" while
+   * packages the code imports (e.g. NumPy) download, and "running" once the
+   * program itself starts.
+   */
+  onPhaseChange?: (phase: RunPhase) => void;
 }
+
+export type RunPhase = "loading" | "loading-packages" | "running";
 
 type WorkerMessage =
   | { type: "ready" }
   | { type: "load-error"; message: string }
+  | { type: "phase"; runId: number; phase: "loading-packages" | "running" }
   | { type: "stdout" | "stderr"; runId: number; text: string }
+  | { type: "figure"; runId: number; dataUrl: string }
   | { type: "done"; runId: number; isSuccess: boolean; errorMessage?: string; isTruncated: boolean };
 
 interface RuntimeHandle {
@@ -95,7 +107,7 @@ export function runPython(request: RunRequest): Promise<RunOutcome> {
   return queuedRun;
 }
 
-async function executeRun({ code, stdin, onStdout, onStderr, onPhaseChange }: RunRequest): Promise<RunOutcome> {
+async function executeRun({ code, stdin, onStdout, onStderr, onFigure, onPhaseChange }: RunRequest): Promise<RunOutcome> {
   const activeRuntime = getRuntime();
 
   if (!activeRuntime.isReady) onPhaseChange?.("loading");
@@ -113,18 +125,37 @@ async function executeRun({ code, stdin, onStdout, onStderr, onPhaseChange }: Ru
   const { worker } = activeRuntime;
 
   return new Promise<RunOutcome>((resolve) => {
-    const timeoutId = window.setTimeout(() => {
-      cleanUp();
-      stopRuntime();
-      resolve({ status: "timeout" });
-    }, RUN_TIMEOUT_MS);
+    let timeoutId = 0;
+
+    // Package downloads get a generous limit of their own; the program's time limit starts once it runs.
+    function startTimer(limitMs: number, outcomeOnExpiry: RunOutcome) {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        cleanUp();
+        stopRuntime();
+        resolve(outcomeOnExpiry);
+      }, limitMs);
+    }
+
+    startTimer(RUN_TIMEOUT_MS, { status: "timeout" });
 
     function onMessage(event: MessageEvent<WorkerMessage>) {
       const message = event.data;
       if (!("runId" in message) || message.runId !== runId) return;
       if (message.type === "stdout") onStdout(message.text);
       else if (message.type === "stderr") onStderr(message.text);
-      else if (message.type === "done") {
+      else if (message.type === "figure") onFigure?.(message.dataUrl);
+      else if (message.type === "phase") {
+        onPhaseChange?.(message.phase);
+        if (message.phase === "loading-packages") {
+          startTimer(PACKAGE_LOAD_TIMEOUT_MS, {
+            status: "unavailable",
+            errorMessage: "Loading Python packages took too long.",
+          });
+        } else {
+          startTimer(RUN_TIMEOUT_MS, { status: "timeout" });
+        }
+      } else if (message.type === "done") {
         cleanUp();
         resolve(
           message.isSuccess

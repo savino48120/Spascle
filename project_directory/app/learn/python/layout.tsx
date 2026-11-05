@@ -2,7 +2,7 @@ import { LearningHeader } from "@/components/layout/learning-header";
 import { SkipLink } from "@/components/layout/skip-link";
 import { CourseSidebar } from "@/components/learning/navigation/course-sidebar";
 import { IS_LEARNING_AD_RAIL_VISIBLE } from "@/lib/constants/site";
-import { getPublishedLessonKeys } from "@/lib/course";
+import { getExerciseLessonKeys, getPublishedLessonKeys } from "@/lib/course";
 import { cn } from "@/lib/utils";
 
 /**
@@ -13,14 +13,15 @@ import { cn } from "@/lib/utils";
  */
 export default function PythonLearningLayout({ children }: LayoutProps<"/learn/python">) {
   const publishedLessonKeys = getPublishedLessonKeys();
+  const exerciseLessonKeys = getExerciseLessonKeys();
 
   return (
     <>
       <SkipLink />
-      <LearningHeader publishedLessonKeys={publishedLessonKeys} />
+      <LearningHeader publishedLessonKeys={publishedLessonKeys} exerciseLessonKeys={exerciseLessonKeys} />
       <div className="flex flex-1">
         <aside className="sticky top-header hidden h-[calc(100dvh-var(--spacing-header))] w-sidebar shrink-0 overflow-y-auto border-r border-border bg-surface-secondary lg:block">
-          <CourseSidebar publishedLessonKeys={publishedLessonKeys} />
+          <CourseSidebar publishedLessonKeys={publishedLessonKeys} exerciseLessonKeys={exerciseLessonKeys} />
         </aside>
         <main id="main-content" className="min-w-0 flex-1 bg-surface">
           {children}

@@ -12,13 +12,43 @@
  *   { type: "run", runId, code, stdin }
  * Protocol (worker -> main):
  *   { type: "ready" } | { type: "load-error", message }
+ *   { type: "phase", runId, phase: "loading-packages" | "running" }
  *   { type: "stdout" | "stderr", runId, text }
+ *   { type: "figure", runId, dataUrl }
  *   { type: "done", runId, isSuccess, errorMessage?, isTruncated }
+ *
+ * Packages a program imports (NumPy, Matplotlib, ...) are downloaded on first
+ * use. The "phase" messages let the main thread pause its time limit while
+ * that happens. Matplotlib figures are rendered to PNG after the program
+ * finishes and sent back as data URLs, since a worker has no screen.
  */
 
 const MAX_OUTPUT_CHARACTERS = 50_000;
+const MAX_FIGURES = 6;
+
+const MATPLOTLIB_SETUP = `
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+plt.close("all")
+plt.show = lambda *args, **kwargs: None
+`;
+
+const COLLECT_FIGURES = `
+import base64, io
+import matplotlib.pyplot as plt
+_figures = []
+for _figure_number in plt.get_fignums()[:${MAX_FIGURES}]:
+    _buffer = io.BytesIO()
+    plt.figure(_figure_number).savefig(_buffer, format="png", dpi=110, bbox_inches="tight")
+    _figures.append(base64.b64encode(_buffer.getvalue()).decode("ascii"))
+plt.close("all")
+_figures
+`;
 
 let pyodidePromise = null;
+/** Import names already prepared in this worker, so later runs skip the loading phase. */
+const preparedImports = new Set();
 
 self.onmessage = async (event) => {
   const message = event.data;
@@ -70,10 +100,15 @@ async function runCode({ runId, code, stdin }) {
   pyodide.setStderr(createWriter("stderr"));
   pyodide.setStdin({ stdin: () => (inputLines.length > 0 ? inputLines.shift() : undefined) });
 
+  const usesMatplotlib = /\bmatplotlib\b/.test(code);
+  await preparePackages(pyodide, code, runId, usesMatplotlib);
+  if (usesMatplotlib) closeOpenFigures(pyodide);
+
   // A fresh namespace per run, so variables from a previous run don't leak in.
   const namespace = pyodide.globals.get("dict")();
   try {
     await pyodide.runPythonAsync(code, { globals: namespace, filename: "main.py" });
+    if (usesMatplotlib) postFigures(pyodide, runId);
     self.postMessage({ type: "done", runId, isSuccess: true, isTruncated });
   } catch (error) {
     self.postMessage({
@@ -85,6 +120,58 @@ async function runCode({ runId, code, stdin }) {
     });
   } finally {
     namespace.destroy();
+  }
+}
+
+/**
+ * Downloads packages the code imports and configures Matplotlib for
+ * off-screen rendering. Import errors are left for the program itself to
+ * report, so learners see a normal `ModuleNotFoundError`.
+ */
+async function preparePackages(pyodide, code, runId, usesMatplotlib) {
+  let importNames = [];
+  try {
+    const foundImports = pyodide.pyimport("pyodide.code").find_imports(code);
+    importNames = foundImports.toJs();
+    foundImports.destroy();
+  } catch {
+    // Code with a syntax error can't be scanned; running it reports the error.
+  }
+
+  const newImports = importNames.filter((importName) => !preparedImports.has(importName));
+  if (newImports.length === 0) return;
+
+  self.postMessage({ type: "phase", runId, phase: "loading-packages" });
+  try {
+    await pyodide.loadPackagesFromImports(code, { messageCallback: () => {}, errorCallback: () => {} });
+    if (usesMatplotlib) await pyodide.runPythonAsync(MATPLOTLIB_SETUP);
+    newImports.forEach((importName) => preparedImports.add(importName));
+  } catch {
+    // Leave it to the program's own import to raise a readable error.
+  }
+  self.postMessage({ type: "phase", runId, phase: "running" });
+}
+
+/** Clears figures left over from a previous run that stopped with an error. */
+function closeOpenFigures(pyodide) {
+  if (!preparedImports.has("matplotlib")) return;
+  try {
+    pyodide.runPython('import matplotlib.pyplot as plt\nplt.close("all")');
+  } catch {
+    // Matplotlib unavailable: the program's own import will report it.
+  }
+}
+
+function postFigures(pyodide, runId) {
+  try {
+    const figureProxy = pyodide.runPython(COLLECT_FIGURES);
+    const pngImages = figureProxy.toJs();
+    figureProxy.destroy();
+    for (const pngBase64 of pngImages) {
+      self.postMessage({ type: "figure", runId, dataUrl: `data:image/png;base64,${pngBase64}` });
+    }
+  } catch (error) {
+    self.postMessage({ type: "stderr", runId, text: `Could not draw the figure: ${String(error && error.message ? error.message : error)}\n` });
   }
 }
 

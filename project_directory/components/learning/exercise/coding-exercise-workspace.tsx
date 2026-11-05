@@ -9,12 +9,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { isExpectedOutput } from "@/lib/exercise-check";
 import type { RunOutcome } from "@/lib/python-runner";
-import type { CodingExercise } from "@/types/lesson";
+import type { CodingExerciseVariant } from "@/types/lesson";
 
 type AnswerCheck = "unchecked" | "correct" | "incorrect";
 
 interface CodingExerciseWorkspaceProps {
-  codingExercise: Pick<CodingExercise, "title" | "starterCode" | "stdin" | "expectedOutput" | "hints" | "solution">;
+  codingExercise: Pick<CodingExerciseVariant, "title" | "starterCode" | "stdin" | "expectedOutput" | "hints" | "solution">;
 }
 
 /**
