@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@/components/shared/google-analytics";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { ThemeSync } from "@/components/theme/theme-sync";
 import { SITE } from "@/lib/constants/site";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
+        <GoogleAnalytics />
         <ThemeScript />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
