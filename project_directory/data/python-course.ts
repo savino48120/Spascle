@@ -12,12 +12,19 @@ function toSlug(title: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-function defineModule(displayOrder: number, title: string, description: string, lessonTitles: string[]): Module {
+function defineModule(
+  displayOrder: number,
+  title: string,
+  description: string,
+  lessonTitles: string[],
+  { hasLab = true }: { hasLab?: boolean } = {},
+): Module {
   return {
     slug: toSlug(title),
     title,
     description,
     displayOrder,
+    hasLab,
     lessons: lessonTitles.map((lessonTitle, index) => ({
       slug: toSlug(lessonTitle),
       title: lessonTitle,
@@ -46,7 +53,10 @@ export const PYTHON_COURSE: Course = {
       "Introduction to Programming",
       "Setting Up Your Python Environment",
       "Your First Python Program",
-    ]),
+    ], {
+      // Too early for a lab: learners have only just written their first program.
+      hasLab: false,
+    }),
     defineModule(2, "Python Fundamentals", "Variables, operators, strings, and input and output.", [
       "Variables and Data Types",
       "Operators and Expressions",

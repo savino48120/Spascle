@@ -30,6 +30,14 @@ function LessonBlockView({ block, blockIndex }: { block: LessonBlock; blockIndex
   switch (block.type) {
     case "heading":
       return <h2 className="mt-6 text-h2 text-foreground first:mt-0">{block.text}</h2>;
+    case "subheading":
+      return (
+        <h3 className="mt-2 text-h3 text-foreground">
+          <RichText text={block.text} />
+        </h3>
+      );
+    case "table":
+      return <LessonTable caption={block.caption} columns={block.columns} rows={block.rows} />;
     case "paragraph":
       return (
         <p className="text-body text-foreground-secondary">
@@ -83,6 +91,36 @@ function LessonBlockView({ block, blockIndex }: { block: LessonBlock; blockIndex
       return <ContextExampleSwitch title={block.title} renderedVariants={renderedVariants} />;
     }
   }
+}
+
+function LessonTable({ caption, columns, rows }: { caption?: string; columns: string[]; rows: string[][] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full border-collapse text-left text-body-sm">
+        {caption && <caption className="px-4 pt-3 text-left text-label text-foreground-secondary">{caption}</caption>}
+        <thead className="bg-surface-secondary">
+          <tr>
+            {columns.map((columnHeading, columnIndex) => (
+              <th key={columnIndex} scope="col" className="border-b border-border px-4 py-2 font-semibold text-foreground">
+                {columnHeading}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((tableRow, rowIndex) => (
+            <tr key={rowIndex} className="border-b border-divider last:border-b-0">
+              {tableRow.map((cellText, cellIndex) => (
+                <td key={cellIndex} className="px-4 py-2 align-top text-foreground-secondary">
+                  <RichText text={cellText} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function ContextVariantView({ variant, label }: { variant: ContextExampleVariant; label: string }) {

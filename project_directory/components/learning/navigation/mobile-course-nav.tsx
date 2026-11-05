@@ -8,7 +8,13 @@ import { PYTHON_COURSE } from "@/data/python-course";
 import { CourseSidebar } from "./course-sidebar";
 
 /** Course navigation drawer for screens narrower than `lg` (ui_specification §17.2–17.3). */
-export function MobileCourseNav({ publishedLessonKeys }: { publishedLessonKeys: string[] }) {
+export function MobileCourseNav({
+  publishedLessonKeys,
+  exerciseLessonKeys,
+}: {
+  publishedLessonKeys: string[];
+  exerciseLessonKeys: string[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,7 +28,11 @@ export function MobileCourseNav({ publishedLessonKeys }: { publishedLessonKeys: 
           <SheetDescription>Modules and lessons</SheetDescription>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <CourseSidebar publishedLessonKeys={publishedLessonKeys} onNavigate={() => setIsOpen(false)} />
+          <CourseSidebar
+            publishedLessonKeys={publishedLessonKeys}
+            exerciseLessonKeys={exerciseLessonKeys}
+            onNavigate={() => setIsOpen(false)}
+          />
         </div>
       </SheetContent>
     </Sheet>

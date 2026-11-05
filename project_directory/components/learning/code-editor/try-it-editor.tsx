@@ -37,13 +37,14 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
   const [stdin, setStdin] = useState(initialStdin);
   const [runState, setRunState] = useState<RunState>({ status: "idle" });
   const [outputText, setOutputText] = useState("");
+  const [figureUrls, setFigureUrls] = useState<string[]>([]);
   const [isCopied, setIsCopied] = useState(false);
   const [editorTheme, setEditorTheme] = useEditorTheme();
   const stdinFieldId = useId();
   const pendingOutputRef = useRef("");
   const flushFrameRef = useRef<number | null>(null);
 
-  const isBusy = runState.status === "loading" || runState.status === "running";
+  const isBusy = runState.status === "loading" || runState.status === "loading-packages" || runState.status === "running";
   const usesInput = /\binput\s*\(/.test(code);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
   async function handleRun() {
     if (isBusy) return;
     setOutputText("");
+    setFigureUrls([]);
     pendingOutputRef.current = "";
     setRunState({ status: "running" });
 
@@ -80,6 +82,7 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
         appendOutput(text);
       },
       onStderr: appendOutput,
+      onFigure: (figureUrl) => setFigureUrls((previousUrls) => [...previousUrls, figureUrl]),
       onPhaseChange: (phase) => setRunState({ status: phase }),
     });
     setRunState(outcome);
@@ -90,6 +93,7 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
     setCode(initialCode);
     setStdin(initialStdin);
     setOutputText("");
+    setFigureUrls([]);
     setRunState({ status: "idle" });
   }
 
@@ -156,7 +160,13 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
       <div className="flex flex-wrap items-center gap-3 border-t border-border px-3 py-3">
         <Button onClick={handleRun} isLoading={isBusy}>
           {!isBusy && <Play className="fill-current" aria-hidden />}
-          {runState.status === "loading" ? "Loading Python…" : isBusy ? "Running…" : "Run"}
+          {runState.status === "loading"
+            ? "Loading Python…"
+            : runState.status === "loading-packages"
+              ? "Loading packages…"
+              : isBusy
+                ? "Running…"
+                : "Run"}
         </Button>
         <span className="hidden text-caption text-foreground-muted sm:inline">
           or press <kbd className="rounded-sm border border-border bg-surface-secondary px-1 font-mono">Ctrl</kbd> +{" "}
@@ -164,7 +174,7 @@ export function TryItEditor({ initialCode, initialStdin = "", label, onRunComple
         </span>
       </div>
 
-      <RunOutput runState={runState} outputText={outputText} onRetry={handleRun} />
+      <RunOutput runState={runState} outputText={outputText} figureUrls={figureUrls} onRetry={handleRun} />
     </section>
   );
 }
