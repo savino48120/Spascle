@@ -16,19 +16,19 @@ export function PathwaySection() {
       className="scroll-mt-header bg-surface-secondary py-20"
     >
       <Container>
-        <Card className="grid gap-10 p-6 sm:p-10 lg:grid-cols-2 lg:gap-16">
-          <div className="flex flex-col items-start gap-6">
+        <Card className="grid gap-10 p-4 sm:p-6 lg:grid-cols-2 lg:gap-16 lg:p-10">
+          <div className="flex min-w-0 flex-col items-start gap-6">
             <Badge variant="success">Available now</Badge>
             <div className="flex flex-col gap-4">
               <h2 id="pathway-heading" className="text-h1 text-balance text-foreground">
                 {PYTHON_COURSE.title}
               </h2>
-              <p className="text-body-lg text-foreground-secondary">{PYTHON_COURSE.description}</p>
+              <p className="text-body-lg leading-normal text-pretty text-foreground-secondary">{PYTHON_COURSE.description}</p>
             </div>
 
-            <dl className="grid w-full grid-cols-2 gap-4 sm:grid-cols-4">
+            <dl className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
               {PYTHON_COURSE_FACTS.map((courseFact) => (
-                <div key={courseFact.label} className="rounded-lg border border-border bg-surface-secondary px-4 py-3">
+                <div key={courseFact.label} className="min-w-0 rounded-lg border border-border bg-surface-secondary px-3 py-3 sm:px-4">
                   <dt className="text-label text-foreground-muted">{courseFact.label}</dt>
                   <dd className="text-h4 text-foreground">{courseFact.value}</dd>
                 </div>
@@ -43,11 +43,11 @@ export function PathwaySection() {
             </Button>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex min-w-0 flex-col gap-3">
             <h3 className="text-label tracking-wide text-foreground-muted uppercase">Course outline</h3>
             <ol className="flex flex-col divide-y divide-divider rounded-lg border border-border">
               {PYTHON_COURSE.modules.map((courseModule) => (
-                <li key={courseModule.slug} className="flex items-start gap-4 px-4 py-3">
+                <li key={courseModule.slug} className="flex items-start gap-3 px-3 py-3 sm:gap-4 sm:px-4">
                   <span className="grid size-7 shrink-0 place-items-center rounded-md bg-primary-subtle text-label font-semibold text-primary-emphasis">
                     {courseModule.displayOrder}
                   </span>
@@ -58,7 +58,7 @@ export function PathwaySection() {
                         {courseModule.lessons.length} lessons
                       </span>
                     </div>
-                    <p className="truncate text-caption text-foreground-secondary">
+                    <p className="line-clamp-2 text-caption leading-snug text-foreground-secondary lg:line-clamp-1">
                       {courseModule.lessons.map((lesson) => lesson.title).join(" · ")}
                     </p>
                   </div>
