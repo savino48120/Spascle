@@ -35,7 +35,7 @@ export function PathwaySection() {
               ))}
             </dl>
 
-            <Button asChild size="lg">
+            <Button asChild size="lg" isFullWidthOnMobile>
               <Link href={ROUTES.python}>
                 Start the Python course
                 <ArrowRight aria-hidden />
@@ -52,7 +52,7 @@ export function PathwaySection() {
                     {courseModule.displayOrder}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline justify-between gap-3">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3">
                       <p className="text-body-sm font-semibold text-foreground">{courseModule.title}</p>
                       <span className="shrink-0 text-caption text-foreground-muted">
                         {courseModule.lessons.length} lessons

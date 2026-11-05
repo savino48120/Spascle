@@ -21,9 +21,9 @@ export default function PythonCourseHomePage() {
 
   return (
     <div className="flex max-w-page flex-col gap-12 px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
-      <header className="relative isolate flex flex-col items-start gap-5 overflow-hidden rounded-xl bg-linear-to-br from-gradient-strong to-gradient-soft p-6 sm:p-10">
+      <header className="relative isolate flex flex-col items-start gap-5 overflow-hidden rounded-xl bg-linear-to-br from-gradient-strong to-gradient-soft p-5 sm:p-10">
         <BrandPattern className="-z-10" />
-        <Badge variant="primary" className="bg-surface/70">
+        <Badge variant="primary" className="bg-surface/70 whitespace-normal">
           {PYTHON_COURSE.programmingLanguage} · Default field: {PYTHON_COURSE.subjectArea}
         </Badge>
         <h1 className="text-h1 text-balance text-foreground">{PYTHON_COURSE.title}</h1>
@@ -39,7 +39,7 @@ export default function PythonCourseHomePage() {
             </div>
           ))}
         </dl>
-        <Button asChild size="lg">
+        <Button asChild size="lg" isFullWidthOnMobile>
           <Link href={FIRST_LESSON_HREF}>
             Start the first lesson
             <ArrowRight aria-hidden />
@@ -73,10 +73,10 @@ export default function PythonCourseHomePage() {
               publishedLessonKeys.has(`${courseModule.slug}/${lesson.slug}`),
             ).length;
             return (
-              <li key={courseModule.slug}>
+              <li key={courseModule.slug} className="min-w-0">
                 <Card className="h-full gap-3 p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
                       <p className="text-label text-foreground-muted">Module {courseModule.displayOrder}</p>
                       <h3 className="text-h4 text-foreground">{courseModule.title}</h3>
                     </div>
@@ -96,10 +96,10 @@ export default function PythonCourseHomePage() {
               </li>
             );
           })}
-          <li>
+          <li className="min-w-0">
             <Card className="h-full gap-3 border-dashed p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
                   <p className="text-label text-foreground-muted">Practical</p>
                   <h3 className="text-h4 text-foreground">Guided computational labs</h3>
                 </div>

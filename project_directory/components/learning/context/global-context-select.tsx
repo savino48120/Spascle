@@ -12,7 +12,7 @@ export function GlobalContextSelect() {
   const [globalContext, setGlobalContext] = useGlobalContext();
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex min-w-0 items-center gap-2">
       <span className="hidden text-label text-foreground-secondary xl:inline">Default field</span>
       <ContextSelect
         value={globalContext}
@@ -20,7 +20,7 @@ export function GlobalContextSelect() {
         contexts={SCIENTIFIC_CONTEXTS}
         ariaLabel="Default scientific field for all lessons"
         menuLabel="Use examples from"
-        triggerClassName="w-36 sm:w-52"
+        triggerClassName="sm:w-52"
       />
     </div>
   );

@@ -57,7 +57,7 @@ export function FeaturesSection() {
 
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {LEARNING_FEATURES.map((learningFeature) => (
-            <li key={learningFeature.title}>
+            <li key={learningFeature.title} className="min-w-0">
               <Card className="h-full">
                 <div
                   aria-hidden

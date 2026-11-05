@@ -15,7 +15,7 @@ export function LearningHeader({ publishedLessonKeys }: { publishedLessonKeys: s
     <header className="sticky top-0 z-40 border-b border-border bg-surface">
       <div className="flex h-header items-center gap-2 px-4 sm:gap-4 lg:px-6">
         <MobileCourseNav publishedLessonKeys={publishedLessonKeys} />
-        <SiteLogo className="shrink-0" />
+        <SiteLogo className="shrink-0" wordmarkClassName="hidden sm:inline" />
         <span aria-hidden className="hidden h-6 w-px bg-divider md:block" />
         <Link
           href={ROUTES.python}
@@ -23,7 +23,7 @@ export function LearningHeader({ publishedLessonKeys }: { publishedLessonKeys: s
         >
           {PYTHON_COURSE.title}
         </Link>
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <div className="ml-auto flex min-w-0 items-center gap-1 sm:gap-2">
           <GlobalContextSelect />
           <ThemeToggle />
         </div>

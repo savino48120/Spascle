@@ -15,7 +15,7 @@ export function LandingHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/100">
       <Container className="flex h-header items-center justify-between gap-4">
-        <SiteLogo />
+        <SiteLogo className="shrink-0" wordmarkClassName="hidden xs:inline" />
 
         <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
           <ul className="hidden items-center md:flex">

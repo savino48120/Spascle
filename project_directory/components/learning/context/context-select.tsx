@@ -58,7 +58,7 @@ export function ContextSelect({
             return (
               <SelectItem key={scientificContext.slug} value={scientificContext.slug}>
                 <ContextIcon aria-hidden className="text-primary-emphasis" />
-                {scientificContext.name}
+                <span className="truncate">{scientificContext.name}</span>
               </SelectItem>
             );
           })}

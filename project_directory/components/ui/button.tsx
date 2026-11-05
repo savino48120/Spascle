@@ -36,7 +36,15 @@ const buttonVariants = cva(
         icon: "size-10 [&_svg]:size-5",
         "icon-sm": "size-8 [&_svg]:size-4",
       },
+      /**
+       * Stretches the button across narrow screens and lets a long label wrap
+       * instead of pushing the page sideways. Back to an inline button from `sm`.
+       */
+      isFullWidthOnMobile: {
+        true: "w-full text-center whitespace-normal sm:w-auto sm:whitespace-nowrap",
+      },
     },
+    compoundVariants: [{ isFullWidthOnMobile: true, size: "lg", className: "h-auto min-h-12 py-2 sm:h-12 sm:py-0" }],
     defaultVariants: { variant: "primary", size: "md" },
   },
 );
@@ -60,13 +68,14 @@ function Button({
   className,
   variant,
   size,
+  isFullWidthOnMobile,
   asChild = false,
   isLoading = false,
   disabled,
   children,
   ...props
 }: ButtonProps) {
-  const classes = cn(buttonVariants({ variant, size }), className);
+  const classes = cn(buttonVariants({ variant, size, isFullWidthOnMobile }), className);
 
   if (asChild) {
     return (

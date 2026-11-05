@@ -79,7 +79,7 @@ function SelectItem({ className, children, ...props }: ComponentProps<typeof Sel
       {...props}
     >
       <SelectPrimitive.ItemText asChild>
-        <span className="flex items-center gap-2">{children}</span>
+        <span className="flex min-w-0 items-center gap-2">{children}</span>
       </SelectPrimitive.ItemText>
       <span className="absolute right-2 flex items-center">
         <SelectPrimitive.ItemIndicator>

@@ -154,7 +154,9 @@
 
   /* ---- Layout sizes ------------------------------------------------
    * Breakpoints use Tailwind defaults, which match spec §17.4:
-   *   sm 640 · md 768 · lg 1024 · xl 1280 */
+   *   sm 640 · md 768 · lg 1024 · xl 1280
+   * plus xs 360 for the narrowest phones (e.g. foldables at 280px). */
+  --breakpoint-xs: 22.5rem;
   --container-page: 76rem; /* max-w-page: site-wide content width */
   --container-reading: 46rem; /* max-w-reading: comfortable lesson width */
   --spacing-header: 4rem; /* h-header, top-header, scroll-mt-header */
