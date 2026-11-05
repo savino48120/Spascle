@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { RUN_TIMEOUT_MS, type RunOutcome } from "@/lib/python-runner";
 import { cn } from "@/lib/utils";
 
-export type RunState = { status: "idle" } | { status: "loading" } | { status: "running" } | RunOutcome;
+export type RunState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "loading-packages" }
+  | { status: "running" }
+  | RunOutcome;
 
 interface StatusDisplay {
   label: string;
@@ -18,6 +23,8 @@ function getStatusDisplay(runState: RunState): StatusDisplay | null {
       return null;
     case "loading":
       return { label: "Loading Python (first run only)…", icon: <Loader2 className="animate-spin" />, className: "text-foreground-secondary" };
+    case "loading-packages":
+      return { label: "Loading packages (first use only)…", icon: <Loader2 className="animate-spin" />, className: "text-foreground-secondary" };
     case "running":
       return { label: "Running…", icon: <Loader2 className="animate-spin" />, className: "text-foreground-secondary" };
     case "success":
@@ -34,11 +41,13 @@ function getStatusDisplay(runState: RunState): StatusDisplay | null {
 interface RunOutputProps {
   runState: RunState;
   outputText: string;
+  /** PNG data URLs of Matplotlib figures the program drew. */
+  figureUrls?: string[];
   onRetry: () => void;
 }
 
 /** Output panel for TryItEditor: status, program output, and error/timeout/unavailable messages (ui_specification §12.3, §12.5). */
-export function RunOutput({ runState, outputText, onRetry }: RunOutputProps) {
+export function RunOutput({ runState, outputText, figureUrls = [], onRetry }: RunOutputProps) {
   const statusDisplay = getStatusDisplay(runState);
   const isTruncated = (runState.status === "success" || runState.status === "error") && runState.isTruncated;
 
@@ -65,7 +74,22 @@ export function RunOutput({ runState, outputText, onRetry }: RunOutputProps) {
         </pre>
       )}
 
-      {runState.status === "success" && !outputText && (
+      {figureUrls.length > 0 && (
+        <div className="mt-2 flex flex-col gap-2">
+          {figureUrls.map((figureUrl, figureIndex) => (
+            // A data URL generated in the browser at run time; next/image can't optimise it.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={figureIndex}
+              src={figureUrl}
+              alt={`Figure ${figureIndex + 1} drawn by your program`}
+              className="max-w-full self-start rounded-md border border-border bg-white"
+            />
+          ))}
+        </div>
+      )}
+
+      {runState.status === "success" && !outputText && figureUrls.length === 0 && (
         <p className="mt-2 text-body-sm text-foreground-muted">The program finished without printing anything.</p>
       )}
 

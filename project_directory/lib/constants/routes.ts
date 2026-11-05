@@ -5,6 +5,12 @@
  * Only `home` exists as a page right now; the learning-area routes are
  * referenced from the landing page and will be built later.
  */
+/**
+ * Path segment for a module's lab. Labs share the lesson route
+ * (`[moduleSlug]/[lessonSlug]`), so no lesson may use this slug.
+ */
+export const LAB_SLUG = "lab";
+
 export const ROUTES = {
   home: "/",
   learn: "/learn",
@@ -12,6 +18,8 @@ export const ROUTES = {
   python: "/learn/python",
   lesson: (moduleSlug: string, lessonSlug: string) =>
     `/learn/python/${moduleSlug}/${lessonSlug}`,
+  /** Guided lab at the end of a module. */
+  lab: (moduleSlug: string) => `/learn/python/${moduleSlug}/${LAB_SLUG}`,
   /** Hands-on coding exercise that follows a lesson. */
   exercise: (moduleSlug: string, lessonSlug: string) =>
     `/learn/python/${moduleSlug}/${lessonSlug}/exercise`,

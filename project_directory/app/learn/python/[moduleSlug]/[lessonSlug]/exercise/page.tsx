@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: ExercisePageProps): Promise<M
   const exerciseLocation = findExerciseLocation(moduleSlug, lessonSlug);
   if (!exerciseLocation) return {};
   return {
-    title: `Exercise: ${exerciseLocation.codingExercise.title} · Python`,
+    title: `Exercise: ${exerciseLocation.lesson.title} · Python`,
     description: `Hands-on coding exercise for the lesson “${exerciseLocation.lesson.title}”.`,
     alternates: { canonical: ROUTES.exercise(moduleSlug, lessonSlug) },
   };

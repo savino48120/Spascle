@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, ChevronDown, FlaskConical } from "lucide-react";
+import { BookOpen, ChevronDown, FlaskConical, SquareTerminal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -11,16 +11,19 @@ import { cn } from "@/lib/utils";
 interface CourseSidebarProps {
   /** `"module/lesson"` keys of lessons with written content; others are marked "Soon". */
   publishedLessonKeys: string[];
+  /** `"module/lesson"` keys of lessons followed by a hands-on exercise. */
+  exerciseLessonKeys: string[];
   /** Called after a link is chosen, e.g. to close the mobile drawer. */
   onNavigate?: () => void;
 }
 
 /**
- * Course navigation: course home, expandable modules with their lessons, and
- * guided labs (ui_specification §8.4). The active lesson (also while on its
- * hands-on exercise) is highlighted and its module expands automatically. No completion indicators in the MVP.
+ * Course navigation (ui_specification §8.4): course home, then expandable
+ * modules listing each lesson, its hands-on exercise, and the module's lab.
+ * The current page is highlighted and its module expands automatically.
+ * No completion indicators in the MVP.
  */
-export function CourseSidebar({ publishedLessonKeys, onNavigate }: CourseSidebarProps) {
+export function CourseSidebar({ publishedLessonKeys, exerciseLessonKeys, onNavigate }: CourseSidebarProps) {
   const pathname = usePathname();
   const activeModuleSlug =
     PYTHON_COURSE.modules.find((courseModule) => pathname.startsWith(`${ROUTES.python}/${courseModule.slug}/`))?.slug ??
@@ -78,7 +81,7 @@ export function CourseSidebar({ publishedLessonKeys, onNavigate }: CourseSidebar
                 <ChevronDown
                   aria-hidden
                   className={cn(
-                    "mt-1 size-4 shrinPythonk-0 text-foreground-muted transition-transform",
+                    "mt-1 size-4 shrink-0 text-foreground-muted transition-transform",
                     isExpanded && "rotate-180",
                   )}
                 />
@@ -86,57 +89,79 @@ export function CourseSidebar({ publishedLessonKeys, onNavigate }: CourseSidebar
 
               <ul id={lessonListId} hidden={!isExpanded} className="mt-0.5 mb-2 flex flex-col">
                 {courseModule.lessons.map((lesson) => {
+                  const lessonKey = `${courseModule.slug}/${lesson.slug}`;
                   const lessonHref = ROUTES.lesson(courseModule.slug, lesson.slug);
-                  const isPublished = publishedLessonKeys.includes(`${courseModule.slug}/${lesson.slug}`);
+                  const exerciseHref = ROUTES.exercise(courseModule.slug, lesson.slug);
+                  const isPublished = publishedLessonKeys.includes(lessonKey);
                   return (
                     <li key={lesson.slug}>
-                      <SidebarLink
-                        href={lessonHref}
-                        isActive={pathname === lessonHref || pathname.startsWith(`${lessonHref}/`)}
-                        onNavigate={onNavigate}
-                        isIndented
-                      >
+                      <SidebarLink href={lessonHref} isActive={pathname === lessonHref} onNavigate={onNavigate} depth={1}>
                         <span className="flex-1">{lesson.title}</span>
                         {!isPublished && <span className="text-caption text-foreground-muted">Soon</span>}
                       </SidebarLink>
+                      {exerciseLessonKeys.includes(lessonKey) && (
+                        <SidebarLink
+                          href={exerciseHref}
+                          isActive={pathname === exerciseHref}
+                          onNavigate={onNavigate}
+                          depth={2}
+                          ariaLabel={`Exercise: ${lesson.title}`}
+                        >
+                          <SquareTerminal aria-hidden className="size-4 shrink-0" />
+                          Exercise
+                        </SidebarLink>
+                      )}
                     </li>
                   );
                 })}
+                {courseModule.hasLab && (
+                  <li>
+                    <SidebarLink
+                      href={ROUTES.lab(courseModule.slug)}
+                      isActive={pathname === ROUTES.lab(courseModule.slug)}
+                      onNavigate={onNavigate}
+                      depth={1}
+                      ariaLabel={`Lab: ${courseModule.title}`}
+                    >
+                      <FlaskConical aria-hidden className="size-4 shrink-0" />
+                      <span className="flex-1">Lab</span>
+                      <span className="text-caption text-foreground-muted">Soon</span>
+                    </SidebarLink>
+                  </li>
+                )}
               </ul>
             </li>
           );
         })}
       </ul>
-
-      <div className="mt-2 border-t border-divider pt-3">
-        <SidebarLink href={ROUTES.labs} isActive={pathname === ROUTES.labs} onNavigate={onNavigate}>
-          <FlaskConical aria-hidden className="size-4 shrink-0" />
-          <span className="flex-1">Guided labs</span>
-          <span className="text-caption text-foreground-muted">Soon</span>
-        </SidebarLink>
-      </div>
     </nav>
   );
 }
 
+const SIDEBAR_INDENT = { 0: "pl-4", 1: "pl-8", 2: "pl-12" } as const;
+
 interface SidebarLinkProps {
   href: string;
   isActive: boolean;
-  isIndented?: boolean;
+  /** Nesting level: 0 top level, 1 a module's lessons and lab, 2 a lesson's exercise. */
+  depth?: keyof typeof SIDEBAR_INDENT;
+  /** Fuller accessible name when the visible text alone is ambiguous (e.g. "Exercise"). */
+  ariaLabel?: string;
   onNavigate?: () => void;
   children: ReactNode;
 }
 
-function SidebarLink({ href, isActive, isIndented = false, onNavigate, children }: SidebarLinkProps) {
+function SidebarLink({ href, isActive, depth = 0, ariaLabel, onNavigate, children }: SidebarLinkProps) {
   return (
     <Link
       href={href}
       onClick={onNavigate}
       aria-current={isActive ? "page" : undefined}
+      aria-label={ariaLabel}
       className={cn(
         "flex items-center gap-2 py-1.5 pr-4 text-body-sm transition-colors",
         "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
-        isIndented ? "pl-8" : "pl-4",
+        SIDEBAR_INDENT[depth],
         isActive
           ? "bg-primary-subtle font-semibold text-primary-emphasis border-l-0"
           : "text-foreground-secondary hover:bg-surface hover:text-foreground",
